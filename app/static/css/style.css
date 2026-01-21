@@ -187,7 +187,7 @@ nav a.active {
 
 /* Process Section */
 .hidden {
-    display: none;
+    display: none !important;
 }
 
 .spinner {
