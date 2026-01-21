@@ -1,5 +1,6 @@
 from fastapi import FastAPI, UploadFile, File, HTTPException, BackgroundTasks
-from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse, RedirectResponse
 import shutil
 import os
 import uuid
@@ -63,6 +64,15 @@ async def upload_pdf(background_tasks: BackgroundTasks, file: UploadFile = File(
         cleanup_files(str(input_path), str(output_path))
         raise HTTPException(status_code=500, detail=str(e))
 
+
+# Mountar arquivos estáticos
+app.mount("/static", StaticFiles(directory="app/static"), name="static")
+
 @app.get("/health")
 def health_check():
     return {"status": "ok"}
+
+@app.get("/")
+def read_root():
+    """Retorna a página inicial."""
+    return FileResponse("app/static/index.html")
