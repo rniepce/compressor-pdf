@@ -39,11 +39,11 @@
                         <polyline points="17 8 12 3 7 8"></polyline>
                         <line x1="12" y1="3" x2="12" y2="15"></line>
                     </svg>
-                    <h3>Arraste e solte seu PDF aqui</h3>
+                    <h3>Arraste e solte seus PDFs aqui</h3>
                     <p>ou</p>
                     <button class="btn-primary" onclick="document.getElementById('file-input').click()">Selecionar
-                        Arquivo</button>
-                    <input type="file" id="file-input" accept=".pdf" hidden>
+                        Arquivos</button>
+                    <input type="file" id="file-input" accept=".pdf" multiple hidden>
                     <div class="compression-options">
                         <label for="compression-level">Nível de Compressão:</label>
                         <select id="compression-level">
@@ -64,35 +64,12 @@
                 </div>
             </div>
 
-            <div class="result-section hidden" id="result-section">
-                <div class="success-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                    </svg>
-                </div>
-                <h3>Arquivo Comprimido com Sucesso!</h3>
+            <div class="results-container hidden" id="results-container">
+                <h3>Arquivos Processados</h3>
+                <div id="file-list"></div>
 
-                <div class="stats-container">
-                    <div class="stat-item">
-                        <span class="stat-label">Tamanho Original</span>
-                        <span class="stat-value" id="original-size">0 MB</span>
-                    </div>
-                    <div class="arrow">➜</div>
-                    <div class="stat-item">
-                        <span class="stat-label">Tamanho Final</span>
-                        <span class="stat-value highlight" id="compressed-size">0 MB</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-label">Redução</span>
-                        <span class="stat-value success" id="compression-ratio">0%</span>
-                    </div>
-                </div>
-
-                <div class="actions">
-                    <a id="download-btn" href="#" class="btn-success" download>Baixar PDF Comprimido</a>
-                    <button class="btn-secondary" id="reset-btn">Comprimir Outro</button>
+                <div class="actions global-actions">
+                    <button class="btn-secondary" id="reset-btn">Comprimir Mais Arquivos</button>
                 </div>
             </div>
 

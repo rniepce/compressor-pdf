@@ -313,3 +313,107 @@ nav a.active {
     background-color: var(--white);
     color: var(--text-primary);
 }
+
+/* Batched File List Styles */
+.results-container {
+    background: var(--white);
+    width: 100%;
+    max-width: 800px;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    padding: 30px;
+    text-align: center;
+}
+
+.results-container h3 {
+    margin-bottom: 20px;
+    color: var(--tjmg-blue);
+}
+
+#file-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 30px;
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.file-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f8f9fa;
+    padding: 15px 20px;
+    border-radius: 8px;
+    border: 1px solid #eee;
+}
+
+.file-info {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    max-width: 50%;
+}
+
+.file-name {
+    font-weight: 500;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.file-original-size {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.file-status {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.file-spinner {
+    border: 3px solid rgba(230, 57, 70, 0.1);
+    border-left-color: var(--tjmg-blue);
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    animation: spin 1s linear infinite;
+}
+
+.file-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.btn-sm {
+    padding: 6px 12px;
+    font-size: 0.9rem;
+}
+
+.savings-tag {
+    font-size: 0.9rem;
+    font-weight: bold;
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+.tag-success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.tag-neutral {
+    background-color: #e2e3e5;
+    color: #383d41;
+}
+
+.error-msg {
+    color: #dc3545;
+    font-weight: 500;
+    font-size: 0.9rem;
+}

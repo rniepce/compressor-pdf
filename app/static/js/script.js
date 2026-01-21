@@ -2,14 +2,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const dropZone = document.getElementById('drop-zone');
     const fileInput = document.getElementById('file-input');
     const uploadSection = document.getElementById('upload-section');
-    const processSection = document.getElementById('process-section');
-    const resultSection = document.getElementById('result-section');
-
-    // Elements for stats
-    const originalSizeEl = document.getElementById('original-size');
-    const compressedSizeEl = document.getElementById('compressed-size');
-    const compressionRatioEl = document.getElementById('compression-ratio');
-    const downloadBtn = document.getElementById('download-btn');
+    const resultsContainer = document.getElementById('results-container');
+    const fileListElement = document.getElementById('file-list');
     const resetBtn = document.getElementById('reset-btn');
 
     // Drag & Drop events
@@ -26,13 +20,13 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         dropZone.classList.remove('dragover');
         if (e.dataTransfer.files.length) {
-            handleFile(e.dataTransfer.files[0]);
+            handleFiles(e.dataTransfer.files);
         }
     });
 
     fileInput.addEventListener('change', (e) => {
         if (fileInput.files.length) {
-            handleFile(fileInput.files[0]);
+            handleFiles(fileInput.files);
         }
     });
 
@@ -45,21 +39,55 @@ document.addEventListener('DOMContentLoaded', () => {
         return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
     }
 
-    async function handleFile(file) {
-        if (file.type !== 'application/pdf') {
-            alert('Por favor, envie apenas arquivos PDF.');
-            return;
-        }
+    function createFileCard(file) {
+        const card = document.createElement('div');
+        card.className = 'file-card';
+        card.innerHTML = `
+            <div class="file-info">
+                <span class="file-name">${file.name}</span>
+                <span class="file-original-size">${formatBytes(file.size)}</span>
+            </div>
+            <div class="file-status">
+                <div class="file-spinner"></div>
+                <span class="status-text">Processando...</span>
+            </div>
+            <div class="file-actions hidden">
+                <a href="#" class="btn-sm btn-success" download>Baixar</a>
+                <span class="savings-tag"></span>
+            </div>
+        `;
+        return card;
+    }
 
-        // Show processing state
+    async function handleFiles(files) {
+        // Switch to Results View
         uploadSection.classList.add('hidden');
-        processSection.classList.remove('hidden');
+        resultsContainer.classList.remove('hidden');
+
+        const compressionLevel = document.getElementById('compression-level').value;
+
+        Array.from(files).forEach(async (file) => {
+            if (file.type !== 'application/pdf') {
+                return; // Skip non-PDFs
+            }
+
+            const card = createFileCard(file);
+            fileListElement.appendChild(card);
+
+            await processFile(file, card, compressionLevel);
+        });
+    }
+
+    async function processFile(file, card, compressionLevel) {
+        const statusDiv = card.querySelector('.file-status');
+        const actionsDiv = card.querySelector('.file-actions');
+        const statusText = card.querySelector('.status-text');
+        const downloadBtn = card.querySelector('a');
+        const savingsTag = card.querySelector('.savings-tag');
 
         try {
             const formData = new FormData();
             formData.append('file', file);
-
-            const compressionLevel = document.getElementById('compression-level').value;
             formData.append('compression_level', compressionLevel);
 
             const uploadResponse = await fetch('/upload', {
@@ -69,43 +97,44 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (!uploadResponse.ok) {
                 const errorData = await uploadResponse.json();
-                throw new Error(errorData.detail || 'Erro ao processar arquivo');
+                throw new Error(errorData.detail || 'Erro');
             }
 
             const blob = await uploadResponse.blob();
             const compressedUrl = window.URL.createObjectURL(blob);
 
-            // Stats Calculation
+            // Stats
             const originalSize = file.size;
             const compressedSize = blob.size;
             const savings = ((originalSize - compressedSize) / originalSize) * 100;
 
-            // Update UI
-            originalSizeEl.textContent = formatBytes(originalSize);
-            compressedSizeEl.textContent = formatBytes(compressedSize);
-            compressionRatioEl.textContent = `${savings.toFixed(1)}%`;
+            // Update Card UI
+            statusDiv.classList.add('hidden');
+            actionsDiv.classList.remove('hidden');
 
-            // Set download link
+            // Update download link
             downloadBtn.href = compressedUrl;
             downloadBtn.download = `compressed_${file.name}`;
 
-            // Show Results
-            processSection.classList.add('hidden');
-            resultSection.classList.remove('hidden');
+            // Show savings
+            if (savings > 0) {
+                savingsTag.textContent = `-${savings.toFixed(1)}%`;
+                savingsTag.classList.add('tag-success');
+            } else {
+                savingsTag.textContent = `0%`;
+                savingsTag.classList.add('tag-neutral');
+            }
 
         } catch (error) {
             console.error(error);
-            alert('Ocorreu um erro ao comprimir o arquivo. Tente novamente.');
-            resetInterface();
+            statusDiv.innerHTML = `<span class="error-msg">❌ Erro</span>`;
         }
     }
 
-    resetBtn.addEventListener('click', resetInterface);
-
-    function resetInterface() {
+    resetBtn.addEventListener('click', () => {
         fileInput.value = '';
-        resultSection.classList.add('hidden');
-        processSection.classList.add('hidden');
+        fileListElement.innerHTML = ''; // Clear list
+        resultsContainer.classList.add('hidden');
         uploadSection.classList.remove('hidden');
-    }
+    });
 });
