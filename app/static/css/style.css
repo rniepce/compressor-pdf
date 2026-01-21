@@ -347,13 +347,14 @@ nav a.active {
     padding: 15px 20px;
     border-radius: 8px;
     border: 1px solid #eee;
+    transition: all 0.2s ease;
 }
 
 .file-info {
     display: flex;
     flex-direction: column;
     text-align: left;
-    max-width: 50%;
+    max-width: 40%;
 }
 
 .file-name {
@@ -369,35 +370,55 @@ nav a.active {
     color: var(--text-secondary);
 }
 
-.file-status {
+/* File States */
+.file-state {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
+}
+
+.state-processing .status-text {
+    color: var(--tjmg-blue);
+    font-weight: 500;
+    font-size: 0.9rem;
 }
 
 .file-spinner {
     border: 3px solid rgba(230, 57, 70, 0.1);
     border-left-color: var(--tjmg-blue);
     border-radius: 50%;
-    width: 20px;
-    height: 20px;
+    width: 24px;
+    height: 24px;
     animation: spin 1s linear infinite;
 }
 
-.file-actions {
-    display: flex;
-    align-items: center;
-    gap: 15px;
+.state-success {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(2px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .btn-sm {
-    padding: 6px 12px;
+    padding: 6px 14px;
     font-size: 0.9rem;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: background-color 0.2s;
 }
 
 .savings-tag {
-    font-size: 0.9rem;
-    font-weight: bold;
+    font-size: 0.85rem;
+    font-weight: 600;
     padding: 4px 8px;
     border-radius: 4px;
 }

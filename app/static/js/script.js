@@ -47,13 +47,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 <span class="file-name">${file.name}</span>
                 <span class="file-original-size">${formatBytes(file.size)}</span>
             </div>
-            <div class="file-status">
-                <div class="file-spinner"></div>
+            
+            <!-- State 1: Processing -->
+            <div class="file-state state-processing">
                 <span class="status-text">Processando...</span>
+                <div class="file-spinner"></div>
             </div>
-            <div class="file-actions hidden">
-                <a href="#" class="btn-sm btn-success" download>Baixar</a>
+
+            <!-- State 2: Success (Initially Hidden) -->
+            <div class="file-state state-success hidden">
                 <span class="savings-tag"></span>
+                <a href="#" class="btn-sm btn-success" download>Baixar</a>
             </div>
         `;
         return card;
@@ -79,9 +83,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function processFile(file, card, compressionLevel) {
-        const statusDiv = card.querySelector('.file-status');
-        const actionsDiv = card.querySelector('.file-actions');
-        const statusText = card.querySelector('.status-text');
+        const processingState = card.querySelector('.state-processing');
+        const successState = card.querySelector('.state-success');
         const downloadBtn = card.querySelector('a');
         const savingsTag = card.querySelector('.savings-tag');
 
@@ -108,9 +111,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const compressedSize = blob.size;
             const savings = ((originalSize - compressedSize) / originalSize) * 100;
 
-            // Update Card UI
-            statusDiv.classList.add('hidden');
-            actionsDiv.classList.remove('hidden');
+            // Transition State: Processing -> Success
+            processingState.classList.add('hidden');
+            successState.classList.remove('hidden'); // Reveal button and stats
 
             // Update download link
             downloadBtn.href = compressedUrl;
@@ -121,13 +124,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 savingsTag.textContent = `-${savings.toFixed(1)}%`;
                 savingsTag.classList.add('tag-success');
             } else {
-                savingsTag.textContent = `0%`;
+                savingsTag.textContent = `Original (0%)`;
                 savingsTag.classList.add('tag-neutral');
             }
 
         } catch (error) {
             console.error(error);
-            statusDiv.innerHTML = `<span class="error-msg">❌ Erro</span>`;
+            processingState.innerHTML = `<span class="error-msg">❌ Falha</span>`;
         }
     }
 
