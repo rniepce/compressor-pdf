@@ -1,7 +1,7 @@
 :root {
-    --tjmg-blue: #003399;
-    --tjmg-blue-dark: #002266;
-    --tjmg-blue-light: #3366cc;
+    --tjmg-blue: #E63946;
+    --tjmg-blue-dark: #B92B34;
+    --tjmg-blue-light: #F76C75;
     --success-green: #28a745;
     --success-green-dark: #218838;
     --gray-bg: #f4f6f9;
@@ -32,7 +32,7 @@ body {
     background-color: var(--tjmg-blue);
     color: var(--white);
     padding: 1rem 0;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .container {
@@ -59,7 +59,7 @@ body {
 .logo-area .divider {
     width: 2px;
     height: 30px;
-    background-color: rgba(255,255,255,0.3);
+    background-color: rgba(255, 255, 255, 0.3);
 }
 
 .logo-area h2 {
@@ -76,7 +76,8 @@ nav a {
     transition: opacity 0.2s;
 }
 
-nav a:hover, nav a.active {
+nav a:hover,
+nav a.active {
     opacity: 1;
 }
 
@@ -110,7 +111,8 @@ nav a:hover, nav a.active {
     background-color: #fafafa;
 }
 
-.upload-box:hover, .upload-box.dragover {
+.upload-box:hover,
+.upload-box.dragover {
     border-color: var(--tjmg-blue);
     background-color: #f0f7ff;
 }
@@ -189,7 +191,7 @@ nav a:hover, nav a.active {
 }
 
 .spinner {
-    border: 4px solid rgba(0, 51, 153, 0.1);
+    border: 4px solid rgba(230, 57, 70, 0.1);
     border-left-color: var(--tjmg-blue);
     border-radius: 50%;
     width: 50px;
@@ -199,8 +201,13 @@ nav a:hover, nav a.active {
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 /* Result Section */
@@ -266,7 +273,7 @@ nav a:hover, nav a.active {
         flex-direction: column;
         gap: 15px;
     }
-    
+
     .arrow {
         transform: rotate(90deg);
     }

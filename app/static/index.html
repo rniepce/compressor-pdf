@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Compressor de PDF - TJMG</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/style.css">
-    <link rel="icon" type="image/x-icon" href="/static/favicon.ico"> 
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
 </head>
+
 <body>
 
     <header class="tjmg-header">
@@ -27,15 +29,22 @@
 
     <main class="main-content">
         <div class="compressor-card">
-            
+
             <div class="upload-section" id="upload-section">
                 <div class="upload-box" id="drop-zone">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="upload-icon"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="upload-icon">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17 8 12 3 7 8"></polyline>
+                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                    </svg>
                     <h3>Arraste e solte seu PDF aqui</h3>
                     <p>ou</p>
-                    <button class="btn-primary" onclick="document.getElementById('file-input').click()">Selecionar Arquivo</button>
+                    <button class="btn-primary" onclick="document.getElementById('file-input').click()">Selecionar
+                        Arquivo</button>
                     <input type="file" id="file-input" accept=".pdf" hidden>
-                    <p class="file-info-hint">Tamanho máximo recomendado: 50MB</p>
+                    <p class="file-info-hint">Tamanho máximo recomendado: 500MB</p>
                 </div>
             </div>
 
@@ -49,10 +58,14 @@
 
             <div class="result-section hidden" id="result-section">
                 <div class="success-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
                 </div>
                 <h3>Arquivo Comprimido com Sucesso!</h3>
-                
+
                 <div class="stats-container">
                     <div class="stat-item">
                         <span class="stat-label">Tamanho Original</span>
@@ -84,4 +97,5 @@
 
     <script src="/static/js/script.js"></script>
 </body>
+
 </html>
