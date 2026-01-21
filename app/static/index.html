@@ -44,6 +44,14 @@
                     <button class="btn-primary" onclick="document.getElementById('file-input').click()">Selecionar
                         Arquivo</button>
                     <input type="file" id="file-input" accept=".pdf" hidden>
+                    <div class="compression-options">
+                        <label for="compression-level">Nível de Compressão:</label>
+                        <select id="compression-level">
+                            <option value="3" selected>Padrão (Recomendado)</option>
+                            <option value="1">Baixa Compressão (Melhor Qualidade)</option>
+                            <option value="4">Alta Compressão (Menor Arquivo)</option>
+                        </select>
+                    </div>
                     <p class="file-info-hint">Tamanho máximo recomendado: 500MB</p>
                 </div>
             </div>

@@ -1,4 +1,4 @@
-from fastapi import FastAPI, UploadFile, File, HTTPException, BackgroundTasks
+from fastapi import FastAPI, UploadFile, File, HTTPException, BackgroundTasks, Form
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, RedirectResponse
 import shutil
@@ -23,8 +23,15 @@ def cleanup_files(*file_paths: str):
         except Exception as e:
             print(f"Erro ao deletar arquivo {path}: {e}")
 
+
+
 @app.post("/upload")
-async def upload_pdf(background_tasks: BackgroundTasks, file: UploadFile = File(...)):
+
+async def upload_pdf(
+    background_tasks: BackgroundTasks, 
+    file: UploadFile = File(...),
+    compression_level: int = Form(3)
+):
     """
     Recebe um arquivo PDF, comprime e retorna o arquivo processado.
     """
@@ -45,18 +52,41 @@ async def upload_pdf(background_tasks: BackgroundTasks, file: UploadFile = File(
             shutil.copyfileobj(file.file, buffer)
             
         # Executar compressão
-        # Nota: Em um ambiente real de produção (Passo 3), isso seria enviado para uma fila (Celery/Redis)
-        # Aqui, fazemos síncrono para o MVP, mas o I/O do subprocesso não bloqueia totalmente o event loop se fosse async IO, 
-        # porém subprocess.run é bloqueante. Para 20k usuários, isso será movido para workers.
-        compress_pdf(str(input_path), str(output_path))
+        compress_pdf(str(input_path), str(output_path), power=compression_level)
+        
+        # Smart Guard: Verificar se o arquivo aumentou
+        original_size = os.path.getsize(input_path)
+        compressed_size = os.path.getsize(output_path)
+        
+        final_path = output_path
+        filename_prefix = "compressed"
+        
+        if compressed_size >= original_size:
+            # Se aumentou ou ficou igual, retornamos o original
+            # Removemos o arquivo "comprimido" inútil
+            if os.path.exists(output_path):
+                os.remove(output_path)
+            
+            # Para simplificar o retorno, vamos copiar o input para o output
+            # Ou apenas servir o input. Vamos servir o input para economizar I/O
+            final_path = input_path
+            filename_prefix = "original"
+            
+            # Ajuste para garantir que o cleanup limpe tudo no final
+            # Se final_path é input_path, precisamos ter cuidado para não deletar antes de enviar
+            # O BackgroundTasks roda DEPOIS da resposta ser enviada, então tudo bem.
         
         # Agendar limpeza dos arquivos após o envio da resposta
+        # Se final_path == input_path, o output_path já foi deletado acima (se existia)
+        # Se input_path e output_path são diferentes, deletamos ambos.
+        # Se usamos o input como final, só precisamos deletar o input_path uma vez.
+        # Simplificação: Passamos os paths para cleanup. Se não existir, ele ignora.
         background_tasks.add_task(cleanup_files, str(input_path), str(output_path))
         
         return FileResponse(
-            str(output_path), 
+            str(final_path), 
             media_type="application/pdf", 
-            filename=f"compressed_{file.filename}"
+            filename=f"{filename_prefix}_{file.filename}"
         )
 
     except Exception as e:

@@ -287,3 +287,29 @@ nav a.active {
         margin-top: 10px;
     }
 }
+
+.compression-options {
+    margin: 15px 0;
+    text-align: left;
+    display: inline-block;
+    width: 100%;
+    max-width: 300px;
+}
+
+.compression-options label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.compression-options select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 0.95rem;
+    background-color: var(--white);
+    color: var(--text-primary);
+}

@@ -59,6 +59,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const formData = new FormData();
             formData.append('file', file);
 
+            const compressionLevel = document.getElementById('compression-level').value;
+            formData.append('compression_level', compressionLevel);
+
             const uploadResponse = await fetch('/upload', {
                 method: 'POST',
                 body: formData
