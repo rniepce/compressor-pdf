@@ -1,3 +1,12 @@
+# Usar uma imagem Node para compilar o frontend
+FROM node:20-slim AS frontend-builder
+
+WORKDIR /frontend
+COPY frontend/package*.json ./
+RUN npm ci
+COPY frontend/ ./
+RUN npm run build
+
 # Usar uma imagem Python oficial leve
 FROM python:3.11-slim
 
@@ -18,11 +27,14 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copiar o código da aplicação
-COPY . .
+COPY app/ app/
+COPY core/ core/
 
-# Expor a porta que o Cloud Run espera (padrão 8080, mas vamos configurar uvicorn para ouvir em 0.0.0.0)
+# Copiar o build do React para app/static/
+COPY --from=frontend-builder /frontend/dist/ app/static/
+
+# Expor a porta que o Cloud Run espera
 EXPOSE 8080
 
 # Comando para rodar a aplicação
-# Nota: Cloud Run define a variável PORT, mas aqui forçamos 8080 ou usamos a variável se disponível
 CMD exec uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8080}

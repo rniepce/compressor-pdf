@@ -5,3 +5,6 @@ __pycache__/
 venv/
 .idea/
 .vscode/
+frontend/node_modules/
+frontend/dist/
+app/static/
