@@ -12,7 +12,7 @@ def compress_pdf(input_path: str, output_path: str, power: int = 3) -> str:
         output_path (str): Caminho para salvar o arquivo PDF comprimido.
         power (int): Nível de compressão (0-4).
                      0: default
-                     1: preplay (menor qualidade, mais rápido)
+                     1: prepress (alta qualidade, pré-impressão)
                      2: printer (qualidade de impressão)
                      3: ebook (qualidade média, bom tamanho - RECOMENDADO)
                      4: screen (menor qualidade, menor tamanho)

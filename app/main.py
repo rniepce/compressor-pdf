@@ -1,6 +1,7 @@
 from fastapi import FastAPI, UploadFile, File, HTTPException, BackgroundTasks, Form
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, RedirectResponse
+from fastapi.middleware.cors import CORSMiddleware
 import shutil
 import os
 import uuid
@@ -8,6 +9,15 @@ from pathlib import Path
 from core.compressor import compress_pdf
 
 app = FastAPI(title="PDF Compressor Service", version="1.0.0")
+
+# CORS — allow React dev server
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Diretório para arquivos temporários
 TEMP_DIR = Path("/tmp/pdf_compressor")
@@ -24,9 +34,7 @@ def cleanup_files(*file_paths: str):
             print(f"Erro ao deletar arquivo {path}: {e}")
 
 
-
 @app.post("/upload")
-
 async def upload_pdf(
     background_tasks: BackgroundTasks, 
     file: UploadFile = File(...),
