@@ -1,13 +1,13 @@
 export default function Header() {
     return (
-        <header className="tjmg-header">
-            <div className="container">
-                <div className="logo-area">
-                    <h1>TJMG</h1>
-                    <div className="divider"></div>
-                    <h2>Compressor de PDF</h2>
+        <header className="header">
+            <div className="header__container">
+                <div className="header__brand">
+                    <span className="header__logo">TJMG</span>
+                    <div className="header__divider" />
+                    <span className="header__title">Compressor de PDF</span>
                 </div>
-                <nav>
+                <nav className="header__nav">
                     <a href="#" className="active">Início</a>
                     <a href="#">Ajuda</a>
                 </nav>

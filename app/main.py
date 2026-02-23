@@ -14,9 +14,6 @@ TEMP_DIR = Path("/tmp/pdf_compressor")
 if not TEMP_DIR.exists():
     TEMP_DIR.mkdir(parents=True, exist_ok=True)
 
-# Diretório dos arquivos estáticos (build React)
-STATIC_DIR = Path("app/static")
-
 def cleanup_files(*file_paths: str):
     """Remove arquivos temporários após o processamento."""
     for path in file_paths:
@@ -66,12 +63,24 @@ async def upload_pdf(
         
         if compressed_size >= original_size:
             # Se aumentou ou ficou igual, retornamos o original
+            # Removemos o arquivo "comprimido" inútil
             if os.path.exists(output_path):
                 os.remove(output_path)
+            
+            # Para simplificar o retorno, vamos copiar o input para o output
+            # Ou apenas servir o input. Vamos servir o input para economizar I/O
             final_path = input_path
             filename_prefix = "original"
+            
+            # Ajuste para garantir que o cleanup limpe tudo no final
+            # Se final_path é input_path, precisamos ter cuidado para não deletar antes de enviar
+            # O BackgroundTasks roda DEPOIS da resposta ser enviada, então tudo bem.
         
         # Agendar limpeza dos arquivos após o envio da resposta
+        # Se final_path == input_path, o output_path já foi deletado acima (se existia)
+        # Se input_path e output_path são diferentes, deletamos ambos.
+        # Se usamos o input como final, só precisamos deletar o input_path uma vez.
+        # Simplificação: Passamos os paths para cleanup. Se não existir, ele ignora.
         background_tasks.add_task(cleanup_files, str(input_path), str(output_path))
         
         return FileResponse(
@@ -86,22 +95,14 @@ async def upload_pdf(
         raise HTTPException(status_code=500, detail=str(e))
 
 
+# Mountar arquivos estáticos
+app.mount("/static", StaticFiles(directory="app/static"), name="static")
+
 @app.get("/health")
 def health_check():
     return {"status": "ok"}
 
-
-# Servir arquivos estáticos do build React (JS, CSS, assets)
-app.mount("/assets", StaticFiles(directory=str(STATIC_DIR / "assets")), name="assets")
-
-
-@app.get("/{full_path:path}")
-def serve_spa(full_path: str):
-    """
-    Catch-all: serve o index.html do React para qualquer rota
-    que não seja /upload, /health ou /assets.
-    """
-    index_path = STATIC_DIR / "index.html"
-    if index_path.exists():
-        return FileResponse(str(index_path))
-    return {"detail": "Frontend not built. Run 'npm run build' in frontend/"}
+@app.get("/")
+def read_root():
+    """Retorna a página inicial."""
+    return FileResponse("app/static/index.html")

@@ -1,93 +1,48 @@
-import { useState, useEffect } from 'react';
+import { formatBytes } from '../utils';
 
-function formatBytes(bytes, decimals = 2) {
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const dm = decimals < 0 ? 0 : decimals;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
-}
+export default function FileCard({ file }) {
+    const { name, originalSize, status, compressedSize, downloadUrl, error } = file;
 
-export default function FileCard({ file, compressionLevel }) {
-    const [status, setStatus] = useState('processing'); // 'processing' | 'success' | 'error'
-    const [downloadUrl, setDownloadUrl] = useState(null);
-    const [savings, setSavings] = useState(0);
-
-    useEffect(() => {
-        let cancelled = false;
-
-        async function processFile() {
-            try {
-                const formData = new FormData();
-                formData.append('file', file);
-                formData.append('compression_level', compressionLevel);
-
-                const response = await fetch('/upload', {
-                    method: 'POST',
-                    body: formData,
-                });
-
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.detail || 'Erro');
-                }
-
-                const blob = await response.blob();
-
-                if (cancelled) return;
-
-                const url = window.URL.createObjectURL(blob);
-                const pct = ((file.size - blob.size) / file.size) * 100;
-
-                setDownloadUrl(url);
-                setSavings(pct);
-                setStatus('success');
-            } catch (err) {
-                console.error(err);
-                if (!cancelled) setStatus('error');
-            }
-        }
-
-        processFile();
-
-        return () => {
-            cancelled = true;
-        };
-    }, [file, compressionLevel]);
+    const savings = status === 'done' && compressedSize < originalSize
+        ? ((originalSize - compressedSize) / originalSize * 100).toFixed(1)
+        : 0;
 
     return (
         <div className="file-card">
-            <div className="file-info">
-                <span className="file-name">{file.name}</span>
-                <span className="file-original-size">{formatBytes(file.size)}</span>
+            <div className="file-card__info">
+                <span className="file-card__name" title={name}>{name}</span>
+                <span className="file-card__size">{formatBytes(originalSize)}</span>
             </div>
 
             {status === 'processing' && (
-                <div className="file-state state-processing">
-                    <span className="status-text">Processando...</span>
-                    <div className="file-spinner"></div>
+                <div className="file-card__state">
+                    <span className="file-card__status">Processando…</span>
+                    <div className="file-card__spinner" />
                 </div>
             )}
 
-            {status === 'success' && (
-                <div className="file-state state-success">
-                    <span className={`savings-tag ${savings > 0 ? 'tag-success' : 'tag-neutral'}`}>
-                        {savings > 0 ? `-${savings.toFixed(1)}%` : 'Original (0%)'}
-                    </span>
-                    <a
-                        href={downloadUrl}
-                        download={`compressed_${file.name}`}
-                        className="btn-sm btn-success"
+            {status === 'done' && (
+                <div className="file-card__state">
+                    <span
+                        className={`file-card__savings ${savings > 0 ? 'file-card__savings--success' : 'file-card__savings--neutral'
+                            }`}
                     >
+                        {savings > 0 ? `−${savings}%` : 'Original (0%)'}
+                    </span>
+                    <a className="btn-download" href={downloadUrl} download={`compressed_${name}`}>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+                            <polyline points="7 10 12 15 17 10" />
+                            <line x1="12" y1="15" x2="12" y2="3" />
+                        </svg>
                         Baixar
                     </a>
                 </div>
             )}
 
             {status === 'error' && (
-                <div className="file-state">
-                    <span className="error-msg">❌ Falha</span>
+                <div className="file-card__state">
+                    <span className="file-card__error">❌ {error || 'Falha'}</span>
                 </div>
             )}
         </div>
