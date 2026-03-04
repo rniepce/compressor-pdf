@@ -103,8 +103,16 @@ async def upload_pdf(
         raise HTTPException(status_code=500, detail=str(e))
 
 
-# Mountar arquivos estáticos
-app.mount("/static", StaticFiles(directory="app/static"), name="static")
+# Detectar automaticamente o diretório do build do frontend
+# Em dev local: frontend/dist/ | Em Docker: app/static/
+STATIC_DIR = "frontend/dist" if os.path.isdir("frontend/dist") else "app/static"
+
+# Montar /assets para servir JS/CSS com hashes do Vite
+_assets_dir = os.path.join(STATIC_DIR, "assets")
+if os.path.isdir(_assets_dir):
+    app.mount("/assets", StaticFiles(directory=_assets_dir), name="assets")
+
+app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
 @app.get("/health")
 def health_check():
@@ -113,4 +121,4 @@ def health_check():
 @app.get("/")
 def read_root():
     """Retorna a página inicial."""
-    return FileResponse("app/static/index.html")
+    return FileResponse(os.path.join(STATIC_DIR, "index.html"))

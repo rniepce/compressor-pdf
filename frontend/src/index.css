@@ -46,10 +46,13 @@
 }
 
 /* ---- Reset ---- */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
 }
 
 body {
@@ -57,10 +60,12 @@ body {
   background-color: var(--bg-primary);
   color: var(--text-primary);
   min-height: 100vh;
+  min-height: -webkit-fill-available;
   display: flex;
   flex-direction: column;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
 }
 
 /* Subtle grid background */
@@ -79,6 +84,7 @@ body::before {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  min-height: -webkit-fill-available;
   position: relative;
   z-index: 1;
 }
@@ -196,6 +202,7 @@ body::before {
     opacity: 0;
     transform: translateY(16px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -382,6 +389,7 @@ body::before {
     opacity: 0;
     transform: translateX(-8px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
@@ -427,7 +435,9 @@ body::before {
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .file-card__status {
@@ -515,31 +525,165 @@ body::before {
 }
 
 /* ============================================
-   RESPONSIVE
+   RESPONSIVE — TABLET (≤ 768px)
    ============================================ */
-@media (max-width: 640px) {
-  .header__container {
-    flex-direction: column;
-    gap: 10px;
+@media (max-width: 768px) {
+  .main {
+    padding: 24px 16px;
+    align-items: flex-start;
   }
 
   .card {
-    padding: 28px 20px;
-    margin: 0 8px;
+    padding: 32px 20px;
+    max-width: 100%;
   }
 
+  .file-card {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .file-card__info {
+    max-width: 60%;
+  }
+}
+
+/* ============================================
+   RESPONSIVE — MOBILE (≤ 600px)
+   ============================================ */
+@media (max-width: 600px) {
+
+  /* Header */
+  .header {
+    padding: 0.6rem 0;
+  }
+
+  .header__container {
+    flex-direction: column;
+    gap: 8px;
+    text-align: center;
+  }
+
+  .header__brand {
+    justify-content: center;
+  }
+
+  .header__logo {
+    font-size: 1.3rem;
+  }
+
+  .header__title {
+    font-size: 0.85rem;
+  }
+
+  .header__nav {
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .header__nav a {
+    padding: 8px 16px;
+    font-size: 0.85rem;
+  }
+
+  /* Main & Card */
+  .main {
+    padding: 16px 12px;
+    align-items: flex-start;
+  }
+
+  .card {
+    padding: 24px 16px;
+    border-radius: 12px;
+  }
+
+  /* Drop Zone */
   .dropzone {
-    padding: 32px 16px;
+    padding: 28px 14px;
   }
 
+  .dropzone__icon {
+    width: 40px;
+    height: 40px;
+    margin-bottom: 12px;
+  }
+
+  .dropzone__title {
+    font-size: 0.95rem;
+  }
+
+  .dropzone__subtitle {
+    margin-bottom: 14px;
+  }
+
+  .btn-select {
+    width: 100%;
+    justify-content: center;
+    min-height: 48px;
+    padding: 12px 24px;
+    font-size: 0.95rem;
+  }
+
+  /* Options */
+  .options {
+    max-width: 100%;
+  }
+
+  .options__select {
+    min-height: 48px;
+    font-size: 16px;
+    /* Prevents iOS auto-zoom on focus */
+    padding: 12px 14px;
+    padding-right: 36px;
+  }
+
+  .dropzone__hint {
+    font-size: 0.7rem;
+  }
+
+  /* File Cards */
   .file-card {
     flex-direction: column;
     gap: 12px;
     text-align: center;
+    padding: 14px 16px;
   }
 
   .file-card__info {
     max-width: 100%;
     text-align: center;
+  }
+
+  .file-card__name {
+    white-space: normal;
+    word-break: break-word;
+  }
+
+  .file-card__state {
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .btn-download {
+    width: 100%;
+    justify-content: center;
+    min-height: 44px;
+    padding: 10px 16px;
+  }
+
+  /* Reset Button */
+  .btn-reset {
+    width: 100%;
+    min-height: 48px;
+    font-size: 0.95rem;
+  }
+
+  /* Footer */
+  .footer {
+    font-size: 0.72rem;
+    padding: 16px 16px;
   }
 }
