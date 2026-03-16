@@ -1,4 +1,4 @@
-export default function Footer() {
+export default function Footer(): React.JSX.Element {
     return (
         <footer className="footer">
             <p>&copy; 2026 Tribunal de Justiça de Minas Gerais — TJMG. Todos os direitos reservados.</p>

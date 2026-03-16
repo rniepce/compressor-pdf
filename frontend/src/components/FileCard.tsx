@@ -1,11 +1,16 @@
 import { formatBytes } from '../utils';
+import type { FileEntry } from '../types';
 
-export default function FileCard({ file }) {
+interface FileCardProps {
+    file: FileEntry;
+}
+
+export default function FileCard({ file }: FileCardProps): React.JSX.Element {
     const { name, originalSize, status, compressedSize, downloadUrl, error } = file;
 
-    const savings = status === 'done' && compressedSize < originalSize
+    const savings = status === 'done' && compressedSize !== null && compressedSize < originalSize
         ? ((originalSize - compressedSize) / originalSize * 100).toFixed(1)
-        : 0;
+        : '0';
 
     return (
         <div className="file-card">
@@ -24,12 +29,12 @@ export default function FileCard({ file }) {
             {status === 'done' && (
                 <div className="file-card__state">
                     <span
-                        className={`file-card__savings ${savings > 0 ? 'file-card__savings--success' : 'file-card__savings--neutral'
+                        className={`file-card__savings ${parseFloat(savings) > 0 ? 'file-card__savings--success' : 'file-card__savings--neutral'
                             }`}
                     >
-                        {savings > 0 ? `−${savings}%` : 'Original (0%)'}
+                        {parseFloat(savings) > 0 ? `−${savings}%` : 'Original (0%)'}
                     </span>
-                    <a className="btn-download" href={downloadUrl} download={`compressed_${name}`}>
+                    <a className="btn-download" href={downloadUrl ?? undefined} download={`compressed_${name}`}>
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                             <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
                             <polyline points="7 10 12 15 17 10" />

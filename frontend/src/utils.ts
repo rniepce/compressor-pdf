@@ -1,4 +1,4 @@
-export function formatBytes(bytes, decimals = 2) {
+export function formatBytes(bytes: number, decimals: number = 2): string {
     if (!bytes || bytes <= 0) return '0 Bytes';
     const k = 1024;
     const dm = decimals < 0 ? 0 : decimals;

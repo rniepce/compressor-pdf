@@ -1,4 +1,4 @@
-export default function Header() {
+export default function Header(): React.JSX.Element {
     return (
         <header className="header">
             <div className="header__container">

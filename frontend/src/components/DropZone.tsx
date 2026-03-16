@@ -1,10 +1,16 @@
 import { useRef, useState, useCallback } from 'react';
 
-export default function DropZone({ onFilesSelected, compressionLevel, onLevelChange }) {
-    const inputRef = useRef(null);
+interface DropZoneProps {
+    onFilesSelected: (files: FileList) => void;
+    compressionLevel: string;
+    onLevelChange: (level: string) => void;
+}
+
+export default function DropZone({ onFilesSelected, compressionLevel, onLevelChange }: DropZoneProps): React.JSX.Element {
+    const inputRef = useRef<HTMLInputElement>(null);
     const [dragover, setDragover] = useState(false);
 
-    const handleDrop = useCallback((e) => {
+    const handleDrop = useCallback((e: React.DragEvent<HTMLDivElement>) => {
         e.preventDefault();
         setDragover(false);
         if (e.dataTransfer.files.length) {
@@ -12,7 +18,7 @@ export default function DropZone({ onFilesSelected, compressionLevel, onLevelCha
         }
     }, [onFilesSelected]);
 
-    const handleDragOver = useCallback((e) => {
+    const handleDragOver = useCallback((e: React.DragEvent<HTMLDivElement>) => {
         e.preventDefault();
         setDragover(true);
     }, []);
@@ -21,8 +27,8 @@ export default function DropZone({ onFilesSelected, compressionLevel, onLevelCha
         setDragover(false);
     }, []);
 
-    const handleChange = useCallback((e) => {
-        if (e.target.files.length) {
+    const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files.length) {
             onFilesSelected(e.target.files);
         }
     }, [onFilesSelected]);
